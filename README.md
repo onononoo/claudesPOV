@@ -1,4 +1,4 @@
-# claudesPOV
+# claudesPOV, YOU get vibecoded... o algo.
 
 a small place to write code in the browser. pick a language, take a random prompt, build the thing.
 
@@ -23,7 +23,7 @@ python, javascript, php, html, css, c, c++, c#, holy c, rust, go, java, kotlin, 
 
 nothing is saved. a refresh clears everything.
 
-## running it
+## running it locally. 
 
 it's a static site with no build step. put the files on any static host (github pages, netlify, etc.), or serve the folder locally:
 
