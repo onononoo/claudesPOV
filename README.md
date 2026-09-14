@@ -1,4 +1,4 @@
-# claudesPOV
+# claudesPOV, YOU get vibecoded... o algo.
 
 write code in your browser. pick a language, get a random prompt, make the thing.
 
@@ -16,7 +16,7 @@ holy c doesn't run. it only works in templeos.
 
 nothing gets saved.
 
-## running it
+## running it locally. 
 
 no build step, it's just html and js. put it on github pages or whatever, or run this in the folder:
 
