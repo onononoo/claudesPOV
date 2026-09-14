@@ -18,7 +18,6 @@
 
   #tabs a { color: #00e; }
   #tabs a.on { color: #000; font-weight: bold; text-decoration: none; }
-  #mood { color: #555; }
 
   #prompt { font-style: italic; }
 
@@ -62,9 +61,6 @@
   dl.glossary dt { font-weight: bold; margin-top: 10px; }
   dl.glossary dd { margin-left: 20px; }
 
-  .gen { margin: 14px 0; }
-  .gen .result { display: block; margin-top: 4px; font-family: Consolas, "Courier New", monospace; }
-  #duckBox { width: 100%; box-sizing: border-box; height: 60px; }
 
   .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #708090; }
   .token.string, .token.char, .token.attr-value, .token.regex { color: #378000; }
@@ -77,7 +73,7 @@
 <body>
 
 <h1><img class="logo" id="logo" src="twelve.jpg" alt=""> claudesPOV</h1>
-<p>a small place to write code. pick a language, take a prompt, build the thing. python, javascript, php, html, css, c, c++, c#, holy c, rust, go, java, kotlin, swift, ruby and lua. <span id="mood"></span></p>
+<p>write code in your browser. pick a language, get a random prompt, make the thing.</p>
 <p id="tabs">
   <a href="#code">code</a> |
   <a href="#prompts">prompts</a> |
@@ -107,7 +103,7 @@
   </div>
 
   <div id="stdinRow">
-    <p class="small">input, for anything your program reads from the keyboard (one line per read):</p>
+    <p class="small">input (if your program asks for any, one line each):</p>
     <textarea id="stdin" spellcheck="false"></textarea>
   </div>
 
@@ -123,29 +119,29 @@
   <hr>
 
   <h3>how it works</h3>
-  <p>every prompt is a small project: an app, a website, a tool or a game. there is no answer attached. write it in the box, press run, read what comes back, fix it, run it again. if a prompt feels too big, build the smallest piece of it first. if you don't like it, take another.</p>
-  <p>python, javascript and php run right here in this browser. the first python or php run takes a few seconds while the language loads. html is drawn in a frame under the editor, and css styles a small sample page so there is something to look at.</p>
-  <p>c, c++, c#, rust, go, java, kotlin, swift, ruby and lua are sent to compiler explorer (godbolt.org) to be compiled and run, and the output comes back here. don't put anything private in that code. programs there get a few seconds and no internet, and anything they read from the keyboard has to be typed into the input box before you press run.</p>
-  <p>holy c can be written here but not run. it only lives inside templeos.</p>
-  <p>nothing is saved. each language keeps its code while the page is open, and a refresh clears everything.</p>
+  <p>you get a random thing to build. an app, a website, a game, whatever. there's no answer, you just have to make it. if it's too big, make a tiny piece of it first.</p>
+  <p>python, javascript and php run in your browser. python and php take a few seconds to load the first time. html and css show up in a box under the editor.</p>
+  <p>c, c++, c#, rust, go, java, kotlin, swift, ruby and lua get sent to godbolt.org to compile and run, so don't paste anything private. if your program asks for input, type it in the input box before you hit run.</p>
+  <p>holy c only runs in templeos, so you can write it here but not run it. sorry.</p>
+  <p>nothing gets saved. refresh and it's gone.</p>
 </section>
 
 <!-- ============ prompts ============ -->
 <section data-tab="prompts" hidden>
-  <p>every prompt on the site. click one to start on it. <button id="randomPrompt">surprise me</button></p>
+  <p>all the prompts. click one to do it. <button id="randomPrompt">random</button></p>
   <div id="promptGroups"></div>
 </section>
 
 <!-- ============ cheat sheet ============ -->
 <section data-tab="cheatsheet" hidden>
-  <p><b>language:</b> <select id="sheetLang"></select> <button id="sheetOpen">open it in the editor</button></p>
+  <p><b>language:</b> <select id="sheetLang"></select> <button id="sheetOpen">open in editor</button></p>
   <div class="scroll"><table class="sheet" id="sheet"></table></div>
 </section>
 
 <!-- ============ typing ============ -->
 <section data-tab="typing" hidden>
-  <p>type the code exactly as it's shown, spaces and all. the clock starts on your first key. tab types four spaces.</p>
-  <p><button id="typeNew">new snippet</button> <span class="small" id="typeLang"></span></p>
+  <p>type the code below exactly. the timer starts when you start typing.</p>
+  <p><button id="typeNew">new one</button> <span class="small" id="typeLang"></span></p>
   <pre id="typeTarget"></pre>
   <p><textarea id="typeBox" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="type here"></textarea></p>
   <p id="typeStats" class="small"></p>
@@ -158,64 +154,30 @@
   <pre id="quizCode"></pre>
   <div id="quizChoices"></div>
   <p id="quizResult"></p>
-  <p><button id="quizNext">next question</button></p>
+  <p><button id="quizNext">next</button></p>
 </section>
 
 <!-- ============ glossary ============ -->
 <section data-tab="glossary" hidden>
-  <p><b>search:</b> <input id="glossarySearch" type="search" placeholder="loop, variable, bug..."></p>
+  <p><b>search:</b> <input id="glossarySearch" type="search" placeholder="loop"></p>
   <dl class="glossary" id="glossaryList"></dl>
 </section>
 
 <!-- ============ nonsense ============ -->
 <section data-tab="nonsense" hidden>
-  <p>none of this helps. all of it is here anyway.</p>
-
-  <div class="gen"><button data-gen="excuse">why doesn't my code work?</button><span class="result" id="gen-excuse"></span></div>
-  <div class="gen"><button data-gen="error">fake error message</button><span class="result" id="gen-error"></span></div>
-  <div class="gen"><button data-gen="commit">commit message</button><span class="result" id="gen-commit"></span></div>
-  <div class="gen"><button data-gen="variable">variable name</button><span class="result" id="gen-variable"></span></div>
-  <div class="gen"><button data-gen="startup">startup idea</button><span class="result" id="gen-startup"></span></div>
-  <div class="gen"><button data-gen="fact">useless (but true) fact</button><span class="result" id="gen-fact"></span></div>
-  <div class="gen"><button data-gen="fortune">fortune cookie</button><span class="result" id="gen-fortune"></span></div>
+  <p><button id="nonsenseButton">press</button></p>
+  <p id="nonsenseOut"></p>
   <hr>
-
-  <h3>the rubber duck</h3>
-  <p>explain your bug to the duck, out loud or in the box. most bugs give up halfway through the explanation.</p>
-  <textarea id="duckBox" placeholder="so basically, the loop is supposed to..."></textarea>
-  <p><button id="duckAsk">tell the duck</button></p>
-  <p id="duckReply" class="small"></p>
+  <p>tell the duck: <input id="duckBox" type="text" size="40"> <button id="duckAsk">tell</button> <span id="duckReply"></span></p>
   <hr>
-
-  <h3>rate my code</h3>
-  <p>grades whatever is in the editor right now, using a system nobody understands.</p>
-  <p><button id="rateCode">rate it</button></p>
-  <p id="rateResult" class="small"></p>
-  <hr>
-
-  <h3>magic 8-ball for code decisions</h3>
-  <p><input id="eightQ" type="text" size="50" placeholder="should i rewrite everything from scratch?"> <button id="eightAsk">shake</button></p>
-  <p id="eightResult" class="small"></p>
-  <hr>
-
-  <h3>tabs or spaces</h3>
-  <p>settle it forever. <button id="coinFlip">flip a coin</button> <span id="coinResult" class="small"></span></p>
-  <hr>
-
-  <h3>programming language that doesn't exist</h3>
-  <p><button id="fakeLang">invent one</button></p>
-  <p id="fakeLangResult" class="small"></p>
-  <hr>
-
-  <h3>banana-o-meter</h3>
-  <p>bananas typed on this page since you got here: <b id="bananaCount">0</b></p>
+  <p>bananas: <b id="bananaCount">0</b></p>
 </section>
 
 <hr>
 <p class="small">ctrl + enter runs the code. tab indents.</p>
 <marquee class="small" scrollamount="4" id="ticker"></marquee>
 <p class="small">you have been on this page for: <b id="timeOnPage">0</b> seconds! <span id="timeNote" class="note"></span></p>
-<p class="small">this project is open source, so please donate to keep it up :) btc: <span id="btc">bc1qs4z04ltddh6vaqd4stu3p4vekv253ht4cwqma4</span> <button id="copyBtc" title="copy address">copy</button></p>
+<p class="small">this project is open source, so please donate to keep it up :) btc: <span id="btc">bc1qs4z04ltddh6vaqd4stu3p4vekv253ht4cwqma4</span> <button id="copyBtc">copy</button></p>
 <p class="small">source code and my other projects: <a href="https://github.com/onononoo/claudesPOV">https://github.com/onononoo/claudesPOV</a> :: <a href="https://github.com/onononoo/">https://github.com/onononoo/</a></p>
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js" data-manual></script>

@@ -174,7 +174,7 @@ async function run() {
     else if (l.run === "python") await runPython(code, stdin);
     else if (l.run === "php") await runPhp(code);
     else if (l.run === "ce") await runCompilerExplorer(l, code, stdin);
-    else print("holy c only runs inside templeos, so it can't be run here. write it here, run it there.", "note");
+    else print("holy c only runs in templeos, sorry.", "note");
     if (l.run !== "none" && l.run !== "html" && l.run !== "css" && !out.textContent) print("(no output)", "note");
   } catch (err) {
     print(String(err && err.message ? err.message : err), "err");

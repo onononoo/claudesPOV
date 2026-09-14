@@ -20,7 +20,6 @@ function goToEditor() {
 }
 
 // ---------- nonsense sprinkled everywhere ----------
-$("mood").textContent = pick(NONSENSE.moods);
 const arrived = Date.now();
 setInterval(() => {
   const seconds = Math.floor((Date.now() - arrived) / 1000);
@@ -31,7 +30,7 @@ setInterval(() => {
 }, 250);
 
 document.addEventListener("visibilitychange", () => {
-  document.title = document.hidden ? pick(NONSENSE.awayTitles) : "claudesPOV";
+  document.title = document.hidden ? pick(NONSENSE.away) : "claudesPOV";
 });
 
 $("copyBtc").addEventListener("click", async () => {
@@ -45,7 +44,7 @@ $("copyBtc").addEventListener("click", async () => {
   }
   setTimeout(() => (button.textContent = "copy"), 1500);
 });
-$("ticker").textContent = shuffle(NONSENSE.facts).join("   ·   ");
+$("ticker").textContent = shuffle(NONSENSE.lines).join("   ");
 
 let typedTail = "", bananas = 0;
 document.addEventListener("keydown", (e) => {
@@ -56,7 +55,7 @@ document.addEventListener("keydown", (e) => {
   $("bananaCount").textContent = ++bananas;
   const logo = $("logo");
   logo.classList.toggle("spin");
-  if (bananas === 12) alert("12 bananas. the chimp is pleased.");
+  if (bananas === 12) alert("12 bananas");
 });
 
 // ---------- prompts ----------
@@ -162,15 +161,15 @@ typeBox.addEventListener("input", () => {
 
   if (typed.length === typing.target.length) {
     typeBox.disabled = true;
-    const verdict = accuracy === 100 ? "clean. not a single typo." : accuracy > 90 ? "close enough for production." : "the compiler would have words for you.";
-    $("typeStats").textContent = `done: ${wpm} wpm, ${accuracy}% accurate. ${verdict}`;
+    const verdict = accuracy === 100 ? "no typos, nice." : accuracy > 90 ? "close enough." : "hmm.";
+    $("typeStats").textContent = `done! ${wpm} wpm, ${accuracy}% accurate. ${verdict}`;
   } else {
     $("typeStats").textContent = `${wpm} wpm, ${accuracy}% accurate`;
   }
 });
 typeBox.addEventListener("paste", (e) => {
   e.preventDefault();
-  $("typeStats").textContent = "no pasting. the chimp is watching.";
+  $("typeStats").textContent = "no pasting :)";
 });
 $("typeNew").addEventListener("click", () => { newSnippet(); typeBox.focus(); });
 
@@ -227,79 +226,19 @@ function renderGlossary() {
     dd.textContent = def;
     dl.append(dt, dd);
   }
-  if (!matches.length) dl.textContent = "nothing. not even the duck knows that one.";
+  if (!matches.length) dl.textContent = "nothing found.";
 }
 $("glossarySearch").addEventListener("input", renderGlossary);
 renderGlossary();
 
 // ---------- nonsense tab ----------
-const GENERATORS = {
-  excuse: () => pick(NONSENSE.excuses),
-  error: () => `${pick(NONSENSE.errorKinds)} ${Math.floor(Math.random() * 900 + 100)}: ${pick(NONSENSE.errorMessages)}`,
-  commit: () => `git commit -m "${pick(NONSENSE.commits)}"`,
-  variable: () => {
-    const a = pick(NONSENSE.adjectives), n = pick(NONSENSE.nouns), s = pick(NONSENSE.suffixes);
-    return Math.random() < 0.5
-      ? a + n[0].toUpperCase() + n.slice(1) + s
-      : `${a}_${n}_${s.toLowerCase()}`;
-  },
-  startup: () => pick(NONSENSE.startupFormats).replace("{thing}", pick(NONSENSE.startupThings)),
-  fact: () => pick(NONSENSE.facts),
-  fortune: () => pick(NONSENSE.fortunes),
-};
-for (const button of document.querySelectorAll("[data-gen]")) {
-  button.addEventListener("click", () => {
-    $("gen-" + button.dataset.gen).textContent = GENERATORS[button.dataset.gen]();
-  });
-}
+$("nonsenseButton").addEventListener("click", () => {
+  $("nonsenseOut").textContent = pick(NONSENSE.lines);
+});
 
 $("duckAsk").addEventListener("click", () => {
-  const said = $("duckBox").value.trim();
-  $("duckReply").textContent = !said
-    ? "the duck waits. you have to actually say something."
-    : said.length > 600 ? "the duck has fallen asleep. try again with fewer words." : "🦆 " + pick(NONSENSE.duck);
+  $("duckReply").textContent = pick(NONSENSE.duck);
 });
-
-$("rateCode").addEventListener("click", () => {
-  const code = codeEl.value.trim();
-  if (!code) {
-    $("rateResult").textContent = "0 / 12. there's nothing there. bold choice.";
-    return;
-  }
-  // same code always gets the same score, so it feels official
-  let hash = 0;
-  for (const ch of code) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
-  const banana = /banana/i.test(code);
-  const score = Math.min(12, (hash % 12) + 1 + (banana ? 1 : 0));
-  const lines = code.split("\n").length;
-  const remarks = [
-    `${LANGS[lang].name}, ${lines} line${lines === 1 ? "" : "s"}.`,
-    NONSENSE.rateRemarks[hash % NONSENSE.rateRemarks.length],
-    NONSENSE.rateRemarks[(hash >>> 5) % NONSENSE.rateRemarks.length],
-  ];
-  if (banana) remarks.push("contains banana: +1.");
-  $("rateResult").textContent = `${score} / 12. ` + [...new Set(remarks)].join(" ");
-});
-
-$("eightAsk").addEventListener("click", () => {
-  $("eightResult").textContent = $("eightQ").value.trim()
-    ? "🎱 " + pick(NONSENSE.eightBall)
-    : "the 8-ball can't answer silence.";
-});
-$("eightQ").addEventListener("keydown", (e) => { if (e.key === "Enter") $("eightAsk").click(); });
-
-$("coinFlip").addEventListener("click", () => {
-  const roll = Math.random();
-  $("coinResult").textContent = roll < 0.01 ? "it landed on its edge. use both. chaos."
-    : roll < 0.505 ? "tabs. it is decided. tell everyone."
-    : "spaces. it is decided. tell everyone.";
-});
-
-$("fakeLang").addEventListener("click", () => {
-  const name = pick(NONSENSE.langStarts) + pick(NONSENSE.langEnds);
-  const ext = name.replace(/[^a-z]/gi, "").slice(0, 3).toLowerCase() || "bnn";
-  $("fakeLangResult").textContent =
-    `${name}: like ${pick(NONSENSE.langReal)}, but ${pick(NONSENSE.langTwists)}. files end in .${ext}.`;
-});
+$("duckBox").addEventListener("keydown", (e) => { if (e.key === "Enter") $("duckAsk").click(); });
 
 showTab();
