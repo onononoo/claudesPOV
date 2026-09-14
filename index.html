@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claudesPOV</title>
+<link rel="icon" type="image/jpeg" href="twelve.jpg">
+<style>
+  :root { color-scheme: light; }
+  html { background: #fff; color: #000; }
+  body { margin: 8px; }
+  h1 { margin-bottom: 0.3em; }
+  h1 .logo { height: 1.3em; width: 1.3em; object-fit: cover; vertical-align: middle; transition: transform 1s; }
+  h1 .logo.spin { transform: rotate(1080deg); }
+  small, .small { font-size: 13px; }
+  button { cursor: pointer; }
+  code, pre, textarea, input.mono { font-family: Consolas, "Courier New", monospace; }
+
+  #tabs a { color: #00e; }
+  #tabs a.on { color: #000; font-weight: bold; text-decoration: none; }
+  #mood { color: #555; }
+
+  #prompt { font-style: italic; }
+
+  .editor { position: relative; height: 380px; border: 1px solid #767676; background: #fff; }
+  .editor:focus-within { border-color: #000; }
+  .editor pre, .editor textarea {
+    position: absolute; inset: 0; margin: 0; padding: 6px; border: 0; box-sizing: border-box;
+    font: 13px/1.45 Consolas, "Courier New", monospace; tab-size: 4;
+    white-space: pre; overflow: scroll; word-wrap: normal;
+  }
+  .editor pre { pointer-events: none; color: #000; }
+  .editor textarea { color: transparent; background: transparent; caret-color: #000; resize: none; outline: none; }
+  .editor textarea::selection { background: rgba(0, 110, 255, 0.25); }
+
+  #stdin { width: 100%; box-sizing: border-box; height: 48px; font-size: 13px; }
+  .out { background: #f4f4f4; border: 1px solid #ccc; padding: 6px; min-height: 60px; max-height: 360px; overflow: auto;
+         margin: 0; font: 13px/1.45 Consolas, "Courier New", monospace; white-space: pre-wrap; }
+  .err { color: #b00; }
+  .ok { color: #070; }
+  .note { color: #777; }
+  #frame { width: 100%; height: 360px; border: 1px solid #767676; background: #fff; }
+
+  .promptList li { margin: 3px 0; }
+  .promptList a { color: #000; }
+
+  table.sheet { border-collapse: collapse; width: 100%; }
+  table.sheet td { border: 1px solid #ccc; padding: 4px 6px; vertical-align: top; }
+  table.sheet td:first-child { width: 150px; }
+  table.sheet pre { margin: 0; font-size: 13px; white-space: pre-wrap; }
+  .scroll { overflow-x: auto; }
+
+  #typeTarget { font-size: 16px; line-height: 1.6; background: #f4f4f4; border: 1px solid #ccc; padding: 8px; margin: 0; white-space: pre-wrap; }
+  #typeTarget .good { color: #070; }
+  #typeTarget .bad { color: #fff; background: #c00; }
+  #typeTarget .cursor { border-left: 2px solid #000; margin-left: -1px; }
+  #typeBox { width: 100%; box-sizing: border-box; height: 110px; font-size: 16px; }
+
+  #quizCode { font-size: 14px; background: #f4f4f4; border: 1px solid #ccc; padding: 8px; margin: 0; }
+  #quizChoices button { display: block; margin: 4px 0; min-width: 240px; text-align: left; font-family: Consolas, "Courier New", monospace; }
+
+  dl.glossary dt { font-weight: bold; margin-top: 10px; }
+  dl.glossary dd { margin-left: 20px; }
+
+  .gen { margin: 14px 0; }
+  .gen .result { display: block; margin-top: 4px; font-family: Consolas, "Courier New", monospace; }
+  #duckBox { width: 100%; box-sizing: border-box; height: 60px; }
+
+  .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #708090; }
+  .token.string, .token.char, .token.attr-value, .token.regex { color: #378000; }
+  .token.keyword, .token.tag, .token.atrule, .token.selector, .token.important { color: #0550ae; }
+  .token.number, .token.boolean, .token.constant { color: #953800; }
+  .token.function, .token.class-name, .token.attr-name, .token.property { color: #8250df; }
+  .token.macro, .token.directive { color: #a0006e; }
+</style>
+</head>
+<body>
+
+<h1><img class="logo" id="logo" src="twelve.jpg" alt=""> claudesPOV</h1>
+<p>a small place to write code. pick a language, take a prompt, build the thing. python, javascript, php, html, css, c, c++, c#, holy c, rust, go, java, kotlin, swift, ruby and lua. <span id="mood"></span></p>
+<p id="tabs">
+  <a href="#code">code</a> |
+  <a href="#prompts">prompts</a> |
+  <a href="#cheatsheet">cheat sheet</a> |
+  <a href="#typing">typing</a> |
+  <a href="#quiz">quiz</a> |
+  <a href="#glossary">glossary</a> |
+  <a href="#nonsense">nonsense</a>
+</p>
+<hr>
+
+<!-- ============ code ============ -->
+<section data-tab="code">
+  <p><b>1. choose a language:</b>
+    <select id="lang"></select>
+  </p>
+  <hr>
+
+  <p><b>2. the prompt:</b> <span id="prompt"></span></p>
+  <p><button id="newPrompt">new prompt</button></p>
+  <hr>
+
+  <p><b>3. write it:</b></p>
+  <div class="editor">
+    <pre aria-hidden="true"><code id="hl"></code></pre>
+    <textarea id="codeInput" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="code"></textarea>
+  </div>
+
+  <div id="stdinRow">
+    <p class="small">input, for anything your program reads from the keyboard (one line per read):</p>
+    <textarea id="stdin" spellcheck="false"></textarea>
+  </div>
+
+  <p>
+    <button id="run">run</button>
+    <button id="reset">start over</button>
+    <span class="small" id="status"></span>
+  </p>
+
+  <p><b>4. output:</b></p>
+  <pre id="output" class="out"></pre>
+  <iframe id="frame" hidden sandbox="allow-scripts allow-modals allow-forms" title="preview"></iframe>
+  <hr>
+
+  <h3>how it works</h3>
+  <p>every prompt is a small project: an app, a website, a tool or a game. there is no answer attached. write it in the box, press run, read what comes back, fix it, run it again. if a prompt feels too big, build the smallest piece of it first. if you don't like it, take another.</p>
+  <p>python, javascript and php run right here in this browser. the first python or php run takes a few seconds while the language loads. html is drawn in a frame under the editor, and css styles a small sample page so there is something to look at.</p>
+  <p>c, c++, c#, rust, go, java, kotlin, swift, ruby and lua are sent to compiler explorer (godbolt.org) to be compiled and run, and the output comes back here. don't put anything private in that code. programs there get a few seconds and no internet, and anything they read from the keyboard has to be typed into the input box before you press run.</p>
+  <p>holy c can be written here but not run. it only lives inside templeos.</p>
+  <p>nothing is saved. each language keeps its code while the page is open, and a refresh clears everything.</p>
+</section>
+
+<!-- ============ prompts ============ -->
+<section data-tab="prompts" hidden>
+  <p>every prompt on the site. click one to start on it. <button id="randomPrompt">surprise me</button></p>
+  <div id="promptGroups"></div>
+</section>
+
+<!-- ============ cheat sheet ============ -->
+<section data-tab="cheatsheet" hidden>
+  <p><b>language:</b> <select id="sheetLang"></select> <button id="sheetOpen">open it in the editor</button></p>
+  <div class="scroll"><table class="sheet" id="sheet"></table></div>
+</section>
+
+<!-- ============ typing ============ -->
+<section data-tab="typing" hidden>
+  <p>type the code exactly as it's shown, spaces and all. the clock starts on your first key. tab types four spaces.</p>
+  <p><button id="typeNew">new snippet</button> <span class="small" id="typeLang"></span></p>
+  <pre id="typeTarget"></pre>
+  <p><textarea id="typeBox" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="type here"></textarea></p>
+  <p id="typeStats" class="small"></p>
+</section>
+
+<!-- ============ quiz ============ -->
+<section data-tab="quiz" hidden>
+  <p>what does this print? <span class="small" id="quizScore"></span></p>
+  <p class="small" id="quizLang"></p>
+  <pre id="quizCode"></pre>
+  <div id="quizChoices"></div>
+  <p id="quizResult"></p>
+  <p><button id="quizNext">next question</button></p>
+</section>
+
+<!-- ============ glossary ============ -->
+<section data-tab="glossary" hidden>
+  <p><b>search:</b> <input id="glossarySearch" type="search" placeholder="loop, variable, bug..."></p>
+  <dl class="glossary" id="glossaryList"></dl>
+</section>
+
+<!-- ============ nonsense ============ -->
+<section data-tab="nonsense" hidden>
+  <p>none of this helps. all of it is here anyway.</p>
+
+  <div class="gen"><button data-gen="excuse">why doesn't my code work?</button><span class="result" id="gen-excuse"></span></div>
+  <div class="gen"><button data-gen="error">fake error message</button><span class="result" id="gen-error"></span></div>
+  <div class="gen"><button data-gen="commit">commit message</button><span class="result" id="gen-commit"></span></div>
+  <div class="gen"><button data-gen="variable">variable name</button><span class="result" id="gen-variable"></span></div>
+  <div class="gen"><button data-gen="startup">startup idea</button><span class="result" id="gen-startup"></span></div>
+  <div class="gen"><button data-gen="fact">useless (but true) fact</button><span class="result" id="gen-fact"></span></div>
+  <div class="gen"><button data-gen="fortune">fortune cookie</button><span class="result" id="gen-fortune"></span></div>
+  <hr>
+
+  <h3>the rubber duck</h3>
+  <p>explain your bug to the duck, out loud or in the box. most bugs give up halfway through the explanation.</p>
+  <textarea id="duckBox" placeholder="so basically, the loop is supposed to..."></textarea>
+  <p><button id="duckAsk">tell the duck</button></p>
+  <p id="duckReply" class="small"></p>
+  <hr>
+
+  <h3>rate my code</h3>
+  <p>grades whatever is in the editor right now, using a system nobody understands.</p>
+  <p><button id="rateCode">rate it</button></p>
+  <p id="rateResult" class="small"></p>
+  <hr>
+
+  <h3>magic 8-ball for code decisions</h3>
+  <p><input id="eightQ" type="text" size="50" placeholder="should i rewrite everything from scratch?"> <button id="eightAsk">shake</button></p>
+  <p id="eightResult" class="small"></p>
+  <hr>
+
+  <h3>tabs or spaces</h3>
+  <p>settle it forever. <button id="coinFlip">flip a coin</button> <span id="coinResult" class="small"></span></p>
+  <hr>
+
+  <h3>programming language that doesn't exist</h3>
+  <p><button id="fakeLang">invent one</button></p>
+  <p id="fakeLangResult" class="small"></p>
+  <hr>
+
+  <h3>banana-o-meter</h3>
+  <p>bananas typed on this page since you got here: <b id="bananaCount">0</b></p>
+</section>
+
+<hr>
+<p class="small">ctrl + enter runs the code. tab indents.</p>
+<marquee class="small" scrollamount="4" id="ticker"></marquee>
+<p class="small">you have been on this page for: <b id="timeOnPage">0</b> seconds! <span id="timeNote" class="note"></span></p>
+<p class="small">this project is open source, so please donate to keep it up :) btc: <span id="btc">bc1qs4z04ltddh6vaqd4stu3p4vekv253ht4cwqma4</span> <button id="copyBtc" title="copy address">copy</button></p>
+<p class="small">source code and my other projects: <a href="https://github.com/onononoo/claudesPOV">https://github.com/onononoo/claudesPOV</a> :: <a href="https://github.com/onononoo/">https://github.com/onononoo/</a></p>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js" data-manual></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-c.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-cpp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-csharp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-markup-templating.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-php.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-rust.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-go.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-java.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-kotlin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-swift.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-ruby.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-lua.min.js"></script>
+<script src="prompts.js"></script>
+<script src="script.js"></script>
+<script src="data.js"></script>
+<script src="tabs.js"></script>
+</body>
+</html>
