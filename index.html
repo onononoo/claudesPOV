@@ -16,6 +16,7 @@
   button { cursor: pointer; }
   code, pre, textarea, input.mono { font-family: Consolas, "Courier New", monospace; }
 
+  #facts { color: #555; line-height: 1.6; }
   #tabs a { color: #00e; }
   #tabs a.on { color: #000; font-weight: bold; text-decoration: none; }
 
@@ -175,10 +176,11 @@
 
 <hr>
 <p class="small">ctrl + enter runs the code. tab indents.</p>
-<marquee class="small" scrollamount="4" id="ticker"></marquee>
 <p class="small">you have been on this page for: <b id="timeOnPage">0</b> seconds! <span id="timeNote" class="note"></span></p>
 <p class="small">this project is open source, so please donate to keep it up :) btc: <span id="btc">bc1qs4z04ltddh6vaqd4stu3p4vekv253ht4cwqma4</span> <button id="copyBtc">copy</button></p>
 <p class="small">source code and my other projects: <a href="https://github.com/onononoo/claudesPOV">https://github.com/onononoo/claudesPOV</a> :: <a href="https://github.com/onononoo/">https://github.com/onononoo/</a></p>
+<hr>
+<p class="small" id="facts"></p>
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js" data-manual></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-c.min.js"></script>

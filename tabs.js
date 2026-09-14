@@ -44,12 +44,20 @@ $("copyBtc").addEventListener("click", async () => {
   }
   setTimeout(() => (button.textContent = "copy"), 1500);
 });
-$("ticker").textContent = shuffle(NONSENSE.lines).join("   ");
+function showFacts() {
+  $("facts").textContent = shuffle(NONSENSE.facts).slice(0, 16).map((f) => "fact: " + f).join("  •  ");
+}
+showFacts();
+setInterval(showFacts, 12000);
 
 let typedTail = "", bananas = 0;
 document.addEventListener("keydown", (e) => {
   if (e.key.length !== 1) return;
   typedTail = (typedTail + e.key.toLowerCase()).slice(-6);
+  if (typedTail.endsWith("quack")) {
+    document.title = "quack";
+    setTimeout(() => (document.title = "claudesPOV"), 2000);
+  }
   if (typedTail !== "banana") return;
   typedTail = "";
   $("bananaCount").textContent = ++bananas;
@@ -57,6 +65,7 @@ document.addEventListener("keydown", (e) => {
   logo.classList.toggle("spin");
   if (bananas === 12) alert("12 bananas");
 });
+$("logo").addEventListener("click", () => $("logo").classList.toggle("spin"));
 
 // ---------- prompts ----------
 {
@@ -114,13 +123,14 @@ function newSnippet() {
       if (label !== "comment" && label !== "types" && code.length <= 160) pool.push([id, code]);
     }
   }
+  for (const code of NONSENSE.typing) pool.push(["nonsense", code]);
   let next;
   do { next = pick(pool); } while (next[1] === typing.target && pool.length > 1);
   [typing.lang, typing.target] = next;
   typing.start = 0;
   typeBox.value = "";
   typeBox.disabled = false;
-  $("typeLang").textContent = "(" + LANGS[typing.lang].name + ")";
+  $("typeLang").textContent = "(" + (LANGS[typing.lang] ? LANGS[typing.lang].name : typing.lang) + ")";
   $("typeStats").textContent = "";
   renderTyping();
 }
@@ -234,6 +244,7 @@ renderGlossary();
 // ---------- nonsense tab ----------
 $("nonsenseButton").addEventListener("click", () => {
   $("nonsenseOut").textContent = pick(NONSENSE.lines);
+  $("nonsenseButton").textContent = pick(NONSENSE.pressLabels);
 });
 
 $("duckAsk").addEventListener("click", () => {

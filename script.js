@@ -182,6 +182,7 @@ async function run() {
     running = false;
     $("run").disabled = false;
     statusEl.textContent = l.run === "none" ? "" : `done in ${((performance.now() - started) / 1000).toFixed(2)}s`;
+    if (statusEl.textContent && Math.random() < 1 / 6) statusEl.textContent += " " + pick(NONSENSE.statusBits);
   }
 }
 
