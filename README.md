@@ -30,6 +30,6 @@ prompts are in `prompts.js`. the cheat sheets, quiz, glossary and nonsense are i
 
 ---
 
-source code and my other projects: https://github.com/onononoo/claudesPOV :: https://github.com/onononoo/
+my other projects: https://github.com/onononoo/
 
 this project is open source, so please donate to keep it up :) btc: bc1qs4z04ltddh6vaqd4stu3p4vekv253ht4cwqma4
