@@ -4,7 +4,7 @@ write code in your browser. pick a language, get a random prompt, make the thing
 
 works with python, javascript, php, html, css, c, c++, c#, holy c, rust, go, java, kotlin, swift, ruby and lua.
 
-there's also a cheat sheet, a typing test, a quiz, a glossary and a nonsense tab. don't ask about the nonsense tab.
+there's also a cheat sheet, a typing test, a quiz, a glossary and a nonsense tab. we like to have fun around here.
 
 ## how code runs
 
@@ -12,9 +12,7 @@ python, javascript and php run in the browser (python uses pyodide, php uses php
 
 c, c++, c#, rust, go, java, kotlin, swift, ruby and lua get sent to godbolt.org to run.
 
-holy c doesn't run. it only works in templeos.
-
-nothing gets saved.
+holy c doesn't run sadly... it only works in templeos.
 
 ## running it locally. 
 
